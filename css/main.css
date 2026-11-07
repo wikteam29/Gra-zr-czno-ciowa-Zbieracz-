@@ -1,0 +1,16 @@
+.border{
+    --bs-border-width: 0.5rem;
+    --bs-border-color: #000;
+}
+.player{
+    width: 75px;
+    height: 75px;
+    image-rendering: pixelated;
+    margin-top: calc(17.5vw - 37.5px);/*USTAWIAMY NA SRODKU WZGLEDEM ROZMIARU*/
+    margin-left: calc(50% - 37.5px);/*USTAWIAMY NA SRODKU WZGLEDEM ROZMIARU*/
+}
+.container{
+    margin: 6vw;
+    height: 35vw;
+    width: 100%;
+}

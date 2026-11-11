@@ -8,9 +8,18 @@
     image-rendering: pixelated;
     margin-top: calc(17.5vw - 37.5px);/*USTAWIAMY NA SRODKU WZGLEDEM ROZMIARU*/
     margin-left: calc(50% - 37.5px);/*USTAWIAMY NA SRODKU WZGLEDEM ROZMIARU*/
+    position: absolute;
+}
+.coin{
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    image-rendering: pixelated;
 }
 .container{
     margin: 6vw;
     height: 35vw;
     width: 100%;
+    padding: 0;
+    position: relative;
 }

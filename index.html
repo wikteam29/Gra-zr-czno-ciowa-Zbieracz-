@@ -14,20 +14,55 @@
             const playerStandAnim = "sprites/player_stand.png";
             const playerRunAnim = "sprites/player_run.gif";
 
-            let playerSpeed = 15;   
+            let playerSpeed = 10;   
             let playerPositionX = parseFloat($player.css("margin-left"));
             let playerPositionY = parseFloat($player.css("margin-top"));
             
             let clickedKeys = {};
             let isStanding = false;    
-            let facingDirection = 0; //0 - prawo, 1 - lewo                    
+            let facingDirection = 0; //0 - prawo, 1 - lewo
+
+            let playerPoints = 0;
+
+            function randomCoinPosition(){
+                let positionX = Math.floor(Math.random() * ($cont.width() - $coin.width()));
+                let positionY = Math.floor(Math.random() * ($cont.height() - $coin.height()));
+                $coin.css({
+                    "margin-left":positionX,
+                    "margin-top":positionY
+                })
+            }
+            function checkColision(obj1, obj2){
+                let obj1X = parseFloat(obj1.css("margin-left"));
+                let obj1Y = parseFloat(obj1.css("margin-top"));
+                let obj2X = parseFloat(obj2.css("margin-left"));
+                let obj2Y = parseFloat(obj2.css("margin-top"));
+
+                if(obj1X < obj2X + obj2.width() &&
+                   obj1X + obj1.width() > obj2X &&
+                   obj1Y < obj2Y + obj2.height() &&
+                   obj1Y + obj1.height() > obj2Y){
+                    return true;
+                }
+                return false;
+            }
+
+
+            //FUNKCJE POCZĄTKOWE
+            const $coin = $("<img>").addClass("coin").attr("src","sprites/coin.gif");
+            $cont.append($coin);
+            randomCoinPosition();
+
+            $("#points").text(`Punkty: ${playerPoints}`);
+            
+            
 
             $(document).on("keydown", function(event){
-                clickedKeys[event.key.toLowerCase()] = true;
+                clickedKeys[event.key.toLowerCase()] = true;//ZAPISUJEMY WCISNIETY KLAWISZ
             })
 
             $(document).on("keyup", function(event){
-                clickedKeys[event.key.toLowerCase()] = false;
+                clickedKeys[event.key.toLowerCase()] = false;//USUWAMY WCISNIETY KLAWISZ
             })
 
             //GŁÓWNA FUNKCJA GRY
@@ -90,14 +125,21 @@
                 }
 
                 //RESETUJEMY SPEED
-                playerSpeed = 15;
+                playerSpeed = 10;
+                
+                if(checkColision($player, $coin)){
+                    randomCoinPosition();
+                    playerPoints++;
+                    $("#points").text(`Punkty: ${playerPoints}`);
+                }
             }
 
-            setInterval(mainGame, 50);
+            setInterval(mainGame, 25);
         })
     </script>
 </head>
 <body>
+    <p id="points"></p>
     <div class="container border">
         <img src="sprites/player_stand.png" class="player">
     </div>

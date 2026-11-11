@@ -1,3 +1,6 @@
+*{
+    font-family: 'tiny5 duo';
+}
 .border{
     --bs-border-width: 0.5rem;
     --bs-border-color: #000;

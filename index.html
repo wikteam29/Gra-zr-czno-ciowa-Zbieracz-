@@ -31,6 +31,7 @@
             let playerPoints = 0;
             let timer = 120;
             let timeAccumulator = 0;
+            let pause = false;
 
 
             function randomCoinPosition(){
@@ -70,6 +71,15 @@
 
             $(document).on("keydown", function(event){
                 clickedKeys[event.key.toLowerCase()] = true;//ZAPISUJEMY WCISNIETY KLAWISZ
+                if(event.key.toLowerCase() == "p"){
+                    pause = !pause;
+                    if(pause){
+                        $("#pause").text("||");
+                        $player.attr("src", playerStandAnim);
+                    }else{
+                        $("#pause").text("");
+                    }
+                }
             })
 
             $(document).on("keyup", function(event){
@@ -78,81 +88,85 @@
 
             //GŁÓWNA FUNKCJA GRY
             function mainGame(){
-                if((clickedKeys["w"] && clickedKeys["d"]) || 
-                    (clickedKeys["d"] && clickedKeys["s"]) ||
-                    (clickedKeys["s"] && clickedKeys["a"]) ||
-                    (clickedKeys["a"] && clickedKeys["w"]))//SPRAWDZAMY CZY IDZIE NA UKOS
-                {
-                    //MATH NOTES
-                    playerSpeed /= Math.sqrt(2);
-                    isStanding = false;
-                }else if((clickedKeys["w"] && clickedKeys["s"]) ||
-                        (clickedKeys["a"] && clickedKeys["d"]))//SPRAWDZAMY CZY STOI W MIEJSCU KLIKAJĄC KLAWISZE DO SIEBIE PRZECIWNE
-                {
-                    isStanding = true;
-                }else{
-                    isStanding = false;
-                }
-
-                let leftBorder = 0 - $player.width()/2;
-                let rightBorder = $cont.width() - $player.width()/2; //width() i height() ZWRACAJĄ LICZBE BEZ PX
-                let topBorder = 0;
-                let bottomBorder = $cont.height() - $player.height();
-
-                //RUCH
-                if(clickedKeys["a"] && playerPositionX - playerSpeed >= leftBorder){
-                    facingDirection = 1;
-                    playerPositionX -= playerSpeed;
-                    $player.css("margin-left", playerPositionX);
-                }
-                if(clickedKeys["d"] && playerPositionX + playerSpeed <= rightBorder){
-                    facingDirection = 0;
-                    playerPositionX += playerSpeed;
-                    $player.css("margin-left", playerPositionX);
-                }
-                if(clickedKeys["w"] && playerPositionY - playerSpeed >= topBorder){
-                    playerPositionY -= playerSpeed;
-                    $player.css("margin-top", playerPositionY);
-                }
-                if(clickedKeys["s"] && playerPositionY + playerSpeed <= bottomBorder){
-                    playerPositionY += playerSpeed;
-                    $player.css("margin-top", playerPositionY);
-                }
-
-                //STRONA W KTÓRĄ SIĘ PATRZY
-                if(facingDirection == 1){
-                    $player.css("transform", "scaleX(-1)"); 
-                }else{
-                    $player.css("transform", "scaleX(1)"); 
-                }
-
-                //ANIMACJE
-                if((clickedKeys["a"] || clickedKeys["d"] || clickedKeys["w"] || clickedKeys["s"]) && !isStanding){
-                    if($player.attr("src") == playerStandAnim){
-                        $player.attr("src", playerRunAnim);
-                    }
-                }else{
-                    $player.attr("src", playerStandAnim);
-                }
-
-                //RESETUJEMY SPEED
-                playerSpeed = 10;
-                
-                if(checkColision($player, $coin)){
-                    randomCoinPosition();
-                    playerPoints++;
-                    $("#points").text(playerPoints);
-                }
-
-                timeAccumulator += interval;
-                if(timeAccumulator >= 1000){
-                    if(timer > 0){
-                        timeAccumulator = 0;
-                        timer--;
-                        $("#timer").text(timer);
+                if(!pause){
+                    if((clickedKeys["w"] && clickedKeys["d"]) || 
+                        (clickedKeys["d"] && clickedKeys["s"]) ||
+                        (clickedKeys["s"] && clickedKeys["a"]) ||
+                        (clickedKeys["a"] && clickedKeys["w"]))//SPRAWDZAMY CZY IDZIE NA UKOS
+                    {
+                        //MATH NOTES
+                        playerSpeed /= Math.sqrt(2);
+                        isStanding = false;
+                    }else if((clickedKeys["w"] && clickedKeys["s"]) ||
+                            (clickedKeys["a"] && clickedKeys["d"]))//SPRAWDZAMY CZY STOI W MIEJSCU KLIKAJĄC KLAWISZE DO SIEBIE PRZECIWNE
+                    {
+                        isStanding = true;
                     }else{
-
+                        isStanding = false;
                     }
+
+                    let leftBorder = 0 - $player.width()/2;
+                    let rightBorder = $cont.width() - $player.width()/2; //width() i height() ZWRACAJĄ LICZBE BEZ PX
+                    let topBorder = 0;
+                    let bottomBorder = $cont.height() - $player.height();
+
+                    //RUCH
+                    if(clickedKeys["a"] && playerPositionX - playerSpeed >= leftBorder){
+                        facingDirection = 1;
+                        playerPositionX -= playerSpeed;
+                        $player.css("margin-left", playerPositionX);
+                    }
+                    if(clickedKeys["d"] && playerPositionX + playerSpeed <= rightBorder){
+                        facingDirection = 0;
+                        playerPositionX += playerSpeed;
+                        $player.css("margin-left", playerPositionX);
+                    }
+                    if(clickedKeys["w"] && playerPositionY - playerSpeed >= topBorder){
+                        playerPositionY -= playerSpeed;
+                        $player.css("margin-top", playerPositionY);
+                    }
+                    if(clickedKeys["s"] && playerPositionY + playerSpeed <= bottomBorder){
+                        playerPositionY += playerSpeed;
+                        $player.css("margin-top", playerPositionY);
+                    }
+
+                    //STRONA W KTÓRĄ SIĘ PATRZY
+                    if(facingDirection == 1){
+                        $player.css("transform", "scaleX(-1)"); 
+                    }else{
+                        $player.css("transform", "scaleX(1)"); 
+                    }
+
+                    //ANIMACJE
+                    if((clickedKeys["a"] || clickedKeys["d"] || clickedKeys["w"] || clickedKeys["s"]) && !isStanding){
+                        if($player.attr("src") == playerStandAnim){
+                            $player.attr("src", playerRunAnim);
+                        }
+                    }else{
+                        $player.attr("src", playerStandAnim);
+                    }
+
+                    //RESETUJEMY SPEED
+                    playerSpeed = 10;
+                    
+                    if(checkColision($player, $coin)){
+                        randomCoinPosition();
+                        playerPoints++;
+                        $("#points").text(playerPoints);
+                    }
+
+                    timeAccumulator += interval;
+                    if(timeAccumulator >= 1000){
+                        if(timer > 0){
+                            timeAccumulator = 0;
+                            timer--;
+                            $("#timer").text(timer);
+                        }else{
+
+                        }
+                    }
+                }else{
+
                 }
             }
 
@@ -162,7 +176,8 @@
 </head>
 <body>
     <p>Punkty: <span id="points"></span></p>
-    <p>Zostało <span id="timer"></span> sekund</p>
+    <p>Zostało <span id="timer"></span> sekund<span id="pause"></span></p>
+    
     <div class="container border">
         <img src="sprites/player_stand.png" class="player">
     </div>

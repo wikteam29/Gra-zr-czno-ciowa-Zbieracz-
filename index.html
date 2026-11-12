@@ -29,7 +29,7 @@
             let facingDirection = 0; //0 - prawo, 1 - lewo
 
             let playerPoints = 0;
-            let timer = 120;
+            let timer = 10;
             let timeAccumulator = 0;
             let pause = false;
 
@@ -71,6 +71,7 @@
 
             $(document).on("keydown", function(event){
                 clickedKeys[event.key.toLowerCase()] = true;//ZAPISUJEMY WCISNIETY KLAWISZ
+
                 if(event.key.toLowerCase() == "p"){
                     pause = !pause;
                     if(pause){
@@ -104,6 +105,7 @@
                     }else{
                         isStanding = false;
                     }
+                    
 
                     let leftBorder = 0 - $player.width()/2;
                     let rightBorder = $cont.width() - $player.width()/2; //width() i height() ZWRACAJĄ LICZBE BEZ PX
@@ -162,7 +164,8 @@
                             timer--;
                             $("#timer").text(timer);
                         }else{
-
+                            sessionStorage.setItem("DeathMessage","Koniec czasu");
+                            window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
                         }
                     }
                 }else{

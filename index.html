@@ -120,12 +120,14 @@
 
                         //PORUSZANIE SIĘ KŁODY DO KOŃCA MAPY
                         let interval = setInterval(function(){
-                            if(logPositionX < $cont.width() - $log.width()){
-                                logPositionX += 20;
-                                $log.css("margin-left",logPositionX);
-                            }else{
-                                clearInterval(interval);
-                                $log.remove();
+                            if(!pause){
+                                if(logPositionX < $cont.width() - $log.width()){
+                                    logPositionX += 20;
+                                    $log.css("margin-left",logPositionX);
+                                }else{
+                                    clearInterval(interval);
+                                    $log.remove();
+                                }
                             }
                         }, 50)
 

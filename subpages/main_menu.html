@@ -15,30 +15,40 @@
     <script>
         $(function(){
             let numberOfResults = Number(localStorage.getItem("numberOfResults"));
-            let top10results = [];
+            let topResults = [];
 
             //WYPEŁNIAMY TABLICE WYNIKAMI
             for(let i=0;i<numberOfResults;i++){
-                top10results[i] = Number(localStorage.getItem(`result${i+1}`));
+                topResults[i] = Number(localStorage.getItem(`result${i+1}`));
             }
 
             //SORTUJEMY TABLICE
             for(let i=0;i<numberOfResults;i++){
                 for(let j=0;j<numberOfResults;j++){
-                    let smaller = top10results[j];
+                    let smaller = topResults[j];
 
-                    if(smaller < top10results[j+1]){
-                        top10results[j] = top10results[j+1];
-                        top10results[j+1] = smaller;
+                    if(smaller < topResults[j+1]){
+                        topResults[j] = topResults[j+1];
+                        topResults[j+1] = smaller;
                     }else{
-                        smaller = top10results[j+1];
+                        smaller = topResults[j+1];
                     }
                 }
             }
 
-            //WYŚWIETLAMY TOP 5
-            for(let i=0;i<5;i++){
-                $("#resutlsTable").append(`<li>${top10results[i]}</li>`);
+            //USUWAMY NIEPOTRZEBNE DANE
+            topResults.splice(5);
+
+            localStorage.clear()
+            localStorage.setItem("numberOfResults", topResults.length);
+
+            for(let i=0;i<topResults.length;i++){
+                localStorage.setItem(`result${i+1}`, topResults[i]);
+            }
+
+            //WYŚWIETLAMY TOPKE
+            for(let i=0;i<topResults.length;i++){
+                $("#resutlsTable").append(`<li>${topResults[i]}</li>`);
             }
         })
     </script>

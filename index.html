@@ -33,18 +33,40 @@
             let timeAccumulator = 0;
             let pause = false;
 
+            let pointToNextObstacle = 5;
+
             if(localStorage.getItem("numberOfResults") == null){
                 localStorage.setItem("numberOfResults", 0);
             }
 
+            function randomObjectPosition(obj){
+                let colision;
 
-            function randomCoinPosition(){
-                let positionX = Math.floor(Math.random() * ($cont.width() - $coin.width()));
-                let positionY = Math.floor(Math.random() * ($cont.height() - $coin.height()));
-                $coin.css({
-                    "margin-left":positionX,
-                    "margin-top":positionY
-                })
+                do{
+                    let positionX = Math.floor(Math.random() * ($cont.width() - obj.width()));
+                    let positionY = Math.floor(Math.random() * ($cont.height() - obj.height()));
+
+                    obj.css({
+                        "margin-left":positionX,
+                        "margin-top":positionY
+                    });
+
+                    colision = false;
+
+                    //obj[0] PONIEWAŻ obj != $player NIE ZADZIAŁA BO $() TWORZY ZA KAŻDYM RAZEM NOWY OBIEKT
+                    //PORÓWNUJEMY obj Z KAŻDYM OBIEKTEM NA MAPIE POZA SAMYYM SOBĄ
+                    if(obj[0] != $player[0] && checkColision($player, obj)){
+                        colision = true;
+                    }
+                    if(obj[0] != $coin[0] && checkColision($coin, obj)){
+                        colision = true;
+                    }
+                    $(".rock").each(function(){
+                        if(this != obj[0] && checkColision($(this), obj)){
+                            colision = true;
+                        }
+                    });
+                }while(colision);
             }
 
             function checkColision(obj1, obj2){
@@ -69,11 +91,53 @@
                 localStorage.setItem(`result${resultNumber}`, result);
             }
 
+            function randomObstacle(){
+                let r = Math.floor(Math.random() * 2);
+
+                switch(r){
+                    case 0:
+                        const $rock = $("<img>").attr("src", "sprites/rock_obstacle.png").addClass("rock");
+                        let rockSize = Math.floor((Math.random() * 51) + 25);
+                        $rock.width(rockSize).height(rockSize);
+
+                        $cont.append($rock);
+                        randomObjectPosition($rock);
+                        break;
+                    case 1:
+                        const $log = $("<img>").attr("src", "sprites/log_obstacle.gif").addClass("log");
+                        let logSize = Math.floor((Math.random() * 51) + 75);
+                        let logPositionX = 0;
+
+                        //SZEROKOŚĆ JEST 3 RAZY MNIEJSZA NIŻ WYSOKOŚĆ
+                        $log.width(logSize/3).height(logSize);
+
+                        $cont.append($log);
+
+                        $log.css({
+                            "margin-left":logPositionX,
+                            "margin-top":Math.floor(Math.random() * ($cont.height() - $log.height()))
+                        })
+
+                        //PORUSZANIE SIĘ KŁODY DO KOŃCA MAPY
+                        let interval = setInterval(function(){
+                            if(logPositionX < $cont.width() - $log.width()){
+                                logPositionX += 20;
+                                $log.css("margin-left",logPositionX);
+                            }else{
+                                clearInterval(interval);
+                                $log.remove();
+                            }
+                        }, 50)
+
+                        break;
+                }
+            }
+
 
             //FUNKCJE POCZĄTKOWE (WYKONUJĄ SIĘ PO ROZPOCZĘCIU GRY)
             const $coin = $("<img>").addClass("coin").attr("src","sprites/coin.gif");
             $cont.append($coin);
-            randomCoinPosition();
+            randomObjectPosition($coin);
 
             $("#points").text(playerPoints);
             $("#timer").text(timer);
@@ -162,9 +226,15 @@
                     playerSpeed = 10;
                     
                     if(checkColision($player, $coin)){
-                        randomCoinPosition();
+                        randomObjectPosition($coin);
                         playerPoints++;
+                        pointToNextObstacle--;
                         $("#points").text(playerPoints);
+                    }
+
+                    if(pointToNextObstacle < 1){
+                        pointToNextObstacle = 5;
+                        randomObstacle();
                     }
 
                     timeAccumulator += interval;
@@ -178,6 +248,20 @@
                             window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
                         }
                     }
+                    $(".rock").each(function(){
+                        if(checkColision($player, $(this))){
+                            addResult(playerPoints);
+                            sessionStorage.setItem("DeathMessage","Uderzyłeś w kamień");
+                            window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
+                        }
+                    })
+                    $(".log").each(function(){
+                        if(checkColision($player, $(this))){
+                            addResult(playerPoints);
+                            sessionStorage.setItem("DeathMessage","Przygniotła cię kłoda");
+                            window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
+                        }
+                    })
                 }else{
 
                 }

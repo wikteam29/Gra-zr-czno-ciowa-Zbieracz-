@@ -15,11 +15,13 @@
     <script>
         $(function(){
             $("#deathMessage").text(sessionStorage.getItem("DeathMessage"));
+            $("#result").text(localStorage.getItem(`result${localStorage.getItem("numberOfResults")}`));
         })
     </script>
 </head>
 <body>
     <p id="deathMessage">sdg</p>
+    <p id="result">sdf</p>
     <a href="main_menu.html"><button>MENU</button></a>
     <a href="../index.html"><button>ZAGRAJ PONOWNIE</button></a>
 

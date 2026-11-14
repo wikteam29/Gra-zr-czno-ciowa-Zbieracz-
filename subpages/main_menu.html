@@ -14,13 +14,42 @@
     <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
     <script>
         $(function(){
+            let numberOfResults = Number(localStorage.getItem("numberOfResults"));
+            let top10results = [];
 
+            //WYPEŁNIAMY TABLICE WYNIKAMI
+            for(let i=0;i<numberOfResults;i++){
+                top10results[i] = Number(localStorage.getItem(`result${i+1}`));
+            }
+
+            //SORTUJEMY TABLICE
+            for(let i=0;i<numberOfResults;i++){
+                for(let j=0;j<numberOfResults;j++){
+                    let smaller = top10results[j];
+
+                    if(smaller < top10results[j+1]){
+                        top10results[j] = top10results[j+1];
+                        top10results[j+1] = smaller;
+                    }else{
+                        smaller = top10results[j+1];
+                    }
+                }
+            }
+
+            //WYŚWIETLAMY TOP 5
+            for(let i=0;i<5;i++){
+                $("#resutlsTable").append(`<li>${top10results[i]}</li>`);
+            }
         })
     </script>
 </head>
 <body>
     <p>Zdobądź jak najwięcej monet przed końcem czasu, uważając na przeszkody</p>
     <a href="../index.html"><button>START</button></a>
+    <p>Top 5 wyników:</p>
+    <ul id="resutlsTable">
+
+    </ul>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>

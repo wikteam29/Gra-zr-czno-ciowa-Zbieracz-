@@ -29,9 +29,13 @@
             let facingDirection = 0; //0 - prawo, 1 - lewo
 
             let playerPoints = 0;
-            let timer = 10;
+            let timer = 120;
             let timeAccumulator = 0;
             let pause = false;
+
+            if(localStorage.getItem("numberOfResults") == null){
+                localStorage.setItem("numberOfResults", 0);
+            }
 
 
             function randomCoinPosition(){
@@ -57,6 +61,12 @@
                     return true;
                 }
                 return false;
+            }
+
+            function addResult(result){
+                let resultNumber = Number(localStorage.getItem("numberOfResults")) + 1;
+                localStorage.setItem("numberOfResults", resultNumber);
+                localStorage.setItem(`result${resultNumber}`, result);
             }
 
 
@@ -105,7 +115,7 @@
                     }else{
                         isStanding = false;
                     }
-                    
+
 
                     let leftBorder = 0 - $player.width()/2;
                     let rightBorder = $cont.width() - $player.width()/2; //width() i height() ZWRACAJĄ LICZBE BEZ PX
@@ -159,11 +169,11 @@
 
                     timeAccumulator += interval;
                     if(timeAccumulator >= 1000){
-                        if(timer > 0){
-                            timeAccumulator = 0;
-                            timer--;
-                            $("#timer").text(timer);
-                        }else{
+                        timeAccumulator = 0;
+                        timer--;
+                        $("#timer").text(timer);
+                        if(timer <= 0){
+                            addResult(playerPoints);
                             sessionStorage.setItem("DeathMessage","Koniec czasu");
                             window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
                         }

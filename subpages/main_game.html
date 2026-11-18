@@ -53,7 +53,8 @@
 
                     colision = false;
 
-                    //obj[0] PONIEWAŻ obj != $player NIE ZADZIAŁA BO $() TWORZY ZA KAŻDYM RAZEM NOWY OBIEKT
+                    //obj[0] PONIEWAŻ obj != $player NIGDY NIE ZADZIAŁA BO $() 
+                    //TWORZY ZA KAŻDYM RAZEM NOWY OBIEKT a $()[0] BIERZE ELEMENT Z HTML
                     //PORÓWNUJEMY obj Z KAŻDYM OBIEKTEM NA MAPIE POZA SAMYYM SOBĄ
                     if(obj[0] != $player[0] && checkColision($player, obj)){
                         colision = true;
@@ -91,6 +92,12 @@
                 localStorage.setItem(`result${resultNumber}`, result);
             }
 
+            function gameOver(deathMessage){
+                addResult(playerPoints);
+                sessionStorage.setItem("deathMessage", deathMessage);
+                window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
+            }
+
             function randomObstacle(){
                 let r = Math.floor(Math.random() * 2);
 
@@ -119,18 +126,17 @@
                         })
 
                         //PORUSZANIE SIĘ KŁODY DO KOŃCA MAPY
-                        let interval = setInterval(function(){
+                        let logIntervalID = setInterval(function(){
                             if(!pause){
                                 if(logPositionX < $cont.width() - $log.width()){
                                     logPositionX += 20;
                                     $log.css("margin-left",logPositionX);
                                 }else{
-                                    clearInterval(interval);
+                                    clearInterval(logIntervalID);
                                     $log.remove();
                                 }
                             }
                         }, 50)
-
                         break;
                 }
             }
@@ -245,30 +251,21 @@
                         timer--;
                         $("#timer").text(timer);
                         if(timer <= 0){
-                            addResult(playerPoints);
-                            sessionStorage.setItem("DeathMessage","Koniec czasu");
-                            window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
+                            gameOver("Koniec czasu");
                         }
                     }
                     $(".rock").each(function(){
                         if(checkColision($player, $(this))){
-                            addResult(playerPoints);
-                            sessionStorage.setItem("DeathMessage","Uderzyłeś w kamień");
-                            window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
+                            gameOver("Uderzyłeś w kamień");
                         }
                     })
                     $(".log").each(function(){
                         if(checkColision($player, $(this))){
-                            addResult(playerPoints);
-                            sessionStorage.setItem("DeathMessage","Przygniotła cię kłoda");
-                            window.location.replace("subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
+                            gameOver("Przygniotła cię kłoda");
                         }
                     })
-                }else{
-
                 }
             }
-
             setInterval(mainGame, interval);
         })
     </script>

@@ -35,10 +35,6 @@
 
             let pointToNextObstacle = 5;
 
-            if(localStorage.getItem("numberOfResults") == null){
-                localStorage.setItem("numberOfResults", 0);
-            }
-
             function randomObjectPosition(obj){
                 let colision;
 
@@ -93,6 +89,8 @@
             }
 
             function gameOver(deathMessage){
+                clearInterval(game);
+
                 addResult(playerPoints);
                 sessionStorage.setItem("deathMessage", deathMessage);
                 window.location.replace("../subpages/gameover_menu.html");//replace() BLOKUJE COFANIE SIE DO GRY Z EKRANU KOŃCOWEGO
@@ -149,6 +147,7 @@
 
             $("#points").text(playerPoints);
             $("#timer").text(timer);
+            //
             
 
             $(document).on("keydown", function(event){
@@ -266,15 +265,17 @@
                     })
                 }
             }
-            setInterval(mainGame, interval);
+            let game = setInterval(mainGame, interval);
         })
     </script>
 </head>
 <body>
-    <p>Punkty: <span id="points"></span></p>
-    <p>Zostało <span id="timer"></span> sekund<span id="pause"></span></p>
-    
-    <div class="container border">
+    <div class="gameInfoContainer">
+        <p class="m-0">Punkty: <span id="points"></span></p>
+        <p class="m-0">Zostało <span id="timer"></span> sekund<span id="pause"></span></p>
+    </div>
+
+    <div class="container mainGameContainer">
         <img src="../sprites/player_stand.png" class="player">
     </div>
 

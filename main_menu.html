@@ -18,8 +18,14 @@
             $("#mainTitle").hide().slideDown(5000, function(){
                 $("#contents").show();
             });
+            $(document).one("click", function(){//one SPRAWI ŻE CLICK WYKONA SIĘ TYLKO RAZ
+                $("#mainTitle").stop(true, true).show()//1 true USUWA KOLEJKĘ, 
+                                                //A 2 PRZERYWA ANIMACJE I CALLBACKUJE FUNKCJĘ
+            })
             
-
+            if(localStorage.getItem("numberOfResults") == null){
+                localStorage.setItem("numberOfResults", 0);
+            }
             let numberOfResults = Number(localStorage.getItem("numberOfResults"));
             let topResults = [];
 
@@ -59,7 +65,7 @@
         })
     </script>
 </head>
-<body id="mainMenu">
+<body class="menuBody">
     <div class="container-fluid">
         <div class="menu">
             <p id="mainTitle">ZBIERACZ</p>

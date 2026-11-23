@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zbieracz</title>
+    <link rel="icon" href="../sprites/favi.ico" type="image/x-icon">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -139,6 +140,16 @@
                 }
             }
 
+            function togglePause(){
+                pause = !pause;
+                if(pause){
+                    $player.attr("src", playerStandAnim);
+                    $(".pauseMenu").show();
+                }else{
+                    $(".pauseMenu").hide();
+                }
+            }
+
 
             //FUNKCJE POCZĄTKOWE (WYKONUJĄ SIĘ PO ROZPOCZĘCIU GRY)
             const $coin = $("<img>").addClass("coin").attr("src","../sprites/coin.gif");
@@ -154,19 +165,16 @@
                 clickedKeys[event.key.toLowerCase()] = true;//ZAPISUJEMY WCISNIETY KLAWISZ
 
                 if(event.key.toLowerCase() == "p"){
-                    pause = !pause;
-                    if(pause){
-                        $("#pause").text("||");
-                        $player.attr("src", playerStandAnim);
-                    }else{
-                        $("#pause").text("");
-                    }
+                    togglePause();
                 }
             })
 
             $(document).on("keyup", function(event){
                 clickedKeys[event.key.toLowerCase()] = false;//USUWAMY WCISNIETY KLAWISZ
             })
+
+            $("#resume").click(togglePause);
+
 
             //GŁÓWNA FUNKCJA GRY
             function mainGame(){
@@ -271,12 +279,18 @@
 </head>
 <body>
     <div class="gameInfoContainer">
-        <p class="m-0">Punkty: <span id="points"></span></p>
-        <p class="m-0">Zostało <span id="timer"></span> sekund<span id="pause"></span></p>
+        <p>Punkty: <span id="points"></span></p>
+        <p>Zostało <span id="timer"></span> sekund</span></p>
+        <p id="pause">pauza(p)</p>
     </div>
 
     <div class="container mainGameContainer">
         <img src="../sprites/player_stand.png" class="player">
+        <div class="pauseMenu menu pt-2">
+            <a href="../main_menu.html"><button>MENU GŁÓWNE</button></a><br>
+            <a href="main_game.html"><button>ZAGRAJ PONOWNIE</button></a><br>
+            <button id="resume">WZNÓW</button><br>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

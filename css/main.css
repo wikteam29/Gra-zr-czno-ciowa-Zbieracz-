@@ -7,7 +7,7 @@
 
 /* KONTENERY */
 .container{
-    margin: 2vw 6vw 2vw 6vw;
+    margin: 2vw 6vw;
     height: 40vw;
     width: 100%;
     padding: 0;
@@ -30,6 +30,12 @@ body{
     padding: 0 3vw 1vw 3vw;
     box-shadow: 0 1.5vw 40px #000;
     border: solid 0.1rem black;
+}
+.pauseMenu{
+    position: absolute;
+    margin: 8vw 25vw;
+    z-index: 2;
+    display: none;
 }
 .mainGameContainer{
     border-style: solid;
@@ -79,13 +85,14 @@ button{
     color: #927f15;
     background: none;
     border: none;
-    font-size: 2rem;
+    font-size: 2.1vw;
 }
 button:hover{
     color: #ccb72f;
 }
 button:active{
     color: #e9dfa7;
+    border: none;
 }
 
 /* TEKSTY */

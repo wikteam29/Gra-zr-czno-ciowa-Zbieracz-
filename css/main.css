@@ -48,7 +48,7 @@ body{
 }
 
 /* SPRITE'Y */
-.player{
+#player{
     width: 75px;
     height: 75px;
     image-rendering: pixelated;
@@ -56,7 +56,12 @@ body{
     margin-left: calc(50% - 37.5px);/*USTAWIAMY NA SRODKU WZGLEDEM ROZMIARU*/
     position: absolute;
 }
-.coin{
+#player img, #coin img, .rock img, .log img{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+#coin{
     width: 25px;
     height: 25px;
     position: absolute;
@@ -106,5 +111,37 @@ p{
 .gameInfoContainer{
     display: flex;
     gap: 5vw;
-    margin-left: 30%;
+    margin-left: 17%;
 }
+#mainMenuContents{
+    display: none;
+}
+
+/* HITBOXY */
+.playerHitbox{
+    width: 50%;
+    height: 80%;
+    margin-top: 10%; /* INNY MARGIN TOP PONIEWAŻ JEST WYLICZANY OD SZEROKOŚCI A TO JEDYNY HITBOX KTÓRY NIE JEST KWADRATEM */
+    margin-left: 25%;
+    position: absolute;
+}
+.coinHitbox{
+    width: 75%;
+    height: 75%;
+    margin: 12.5%;
+    position: absolute;
+}
+.rockHitbox{
+    width: 50%;
+    height: 50%;
+    margin: 25%;
+    position: absolute;
+}
+.logHitbox{
+    width: 75%;
+    height: 75%;
+    margin-top: 30%; /* INNY MARGIN TOP PONIEWAŻ JEST WYLICZANY OD SZEROKOŚCI A TO JEDYNY HITBOX KTÓRY NIE JEST KWADRATEM */
+    margin-left: 12.5%;
+    position: absolute;
+}
+

@@ -16,7 +16,11 @@
     <script>
         $(function(){
             const $cont = $(".container");
-            const $player = $(".player");
+
+            const $player = $("#player");
+            const $playerSprite = $("#playerSprite");
+            const $playerHitbox = $("#playerHitbox")
+
             const playerStandAnim = "../sprites/player_stand.png";
             const playerRunAnim = "../sprites/player_run.gif";
             const interval = 25;
@@ -35,6 +39,8 @@
             let pause = false;
 
             let pointToNextObstacle = 5;
+
+            let hitboxShowed = false;
 
             function randomObjectPosition(obj){
                 let colision;
@@ -68,10 +74,10 @@
             }
 
             function checkColision(obj1, obj2){
-                let obj1X = parseFloat(obj1.css("margin-left"));
-                let obj1Y = parseFloat(obj1.css("margin-top"));
-                let obj2X = parseFloat(obj2.css("margin-left"));
-                let obj2Y = parseFloat(obj2.css("margin-top"));
+                let obj1X = parseFloat(obj1.css("margin-left")) + parseFloat(obj1.parent().css("margin-left"));
+                let obj1Y = parseFloat(obj1.css("margin-top")) + parseFloat(obj1.parent().css("margin-top"));
+                let obj2X = parseFloat(obj2.css("margin-left")) + parseFloat(obj2.parent().css("margin-left"));
+                let obj2Y = parseFloat(obj2.css("margin-top")) + parseFloat(obj2.parent().css("margin-top"));
 
                 //MATH NOTES
                 if(obj1X < obj2X + obj2.width() &&
@@ -101,28 +107,45 @@
                 let r = Math.floor(Math.random() * 2);
 
                 switch(r){
+                    
                     case 0:
-                        const $rock = $("<img>").attr("src", "../sprites/rock_obstacle.png").addClass("rock");
+                        const $rock = $("<div>").addClass("rock");
+                        const $rockSprite = $("<img>").attr("src", "../sprites/rock_obstacle.png");
+                        const $rockHitbox = $("<div>").addClass("rockHitbox");
+                        
                         let rockSize = Math.floor((Math.random() * 51) + 25);
                         $rock.width(rockSize).height(rockSize);
-
+                        
                         $cont.append($rock);
+                        $rock.append($rockSprite).append($rockHitbox);
                         randomObjectPosition($rock);
+
+                        if(hitboxShowed){
+                            showHitbox();
+                        }
                         break;
                     case 1:
-                        const $log = $("<img>").attr("src", "../sprites/log_obstacle.gif").addClass("log");
+                        const $log = $("<div>").addClass("log");
+                        const $logSprite = $("<img>").attr("src", "../sprites/log_obstacle.gif");
+                        const $logHitbox = $("<div>").addClass("logHitbox");
+
                         let logSize = Math.floor((Math.random() * 51) + 75);
                         let logPositionX = 0;
 
                         //SZEROKOŚĆ JEST 3 RAZY MNIEJSZA NIŻ WYSOKOŚĆ
                         $log.width(logSize/3).height(logSize);
 
-                        $cont.append($log);
-
                         $log.css({
                             "margin-left":logPositionX,
                             "margin-top":Math.floor(Math.random() * ($cont.height() - $log.height()))
                         })
+
+                        $cont.append($log);
+                        $log.append($logSprite).append($logHitbox);
+
+                        if(hitboxShowed){
+                            showHitbox();
+                        }
 
                         //PORUSZANIE SIĘ KŁODY DO KOŃCA MAPY
                         let logIntervalID = setInterval(function(){
@@ -139,7 +162,7 @@
                         break;
                 }
             }
-
+            
             function togglePause(){
                 pause = !pause;
                 if(pause){
@@ -150,10 +173,25 @@
                 }
             }
 
+            function showHitbox(){
+                hitboxShowed = true;
+                $(".playerHitbox, .coinHitbox, .rockHitbox, .logHitbox").addClass("border border-primary");
+                $("#player, #coin, .rock, .log").addClass("border border-danger");
+            }
+
+            function hideHitbox(){
+                hitboxShowed = false;
+                $(".playerHitbox, .coinHitbox, .logHitbox").removeClass("border border-primary");
+                $("#player, #coin, .rock, .log").removeClass("border border-danger");
+            }
+
 
             //FUNKCJE POCZĄTKOWE (WYKONUJĄ SIĘ PO ROZPOCZĘCIU GRY)
-            const $coin = $("<img>").addClass("coin").attr("src","../sprites/coin.gif");
+            const $coin = $("<div id='coin'>");
+            const $coinSprite = $("<img>").attr("src","../sprites/coin.gif");
+            const $coinHitbox = $("<div>").addClass("coinHitbox");
             $cont.append($coin);
+            $coin.append($coinSprite).append($coinHitbox);
             randomObjectPosition($coin);
 
             $("#points").text(playerPoints);
@@ -166,6 +204,12 @@
 
                 if(event.key.toLowerCase() == "p"){
                     togglePause();
+                }else if(event.key.toLowerCase() == "h"){
+                    if(!hitboxShowed){
+                        showHitbox();
+                    }else{
+                        hideHitbox();
+                    }
                 }
             })
 
@@ -173,7 +217,7 @@
                 clickedKeys[event.key.toLowerCase()] = false;//USUWAMY WCISNIETY KLAWISZ
             })
 
-            $("#resume").click(togglePause);
+            $("#resumeBtn").click(togglePause);
 
 
             //GŁÓWNA FUNKCJA GRY
@@ -230,17 +274,17 @@
 
                     //ANIMACJE
                     if((clickedKeys["a"] || clickedKeys["d"] || clickedKeys["w"] || clickedKeys["s"]) && !isStanding){
-                        if($player.attr("src") == playerStandAnim){
-                            $player.attr("src", playerRunAnim);
+                        if($playerSprite.attr("src") == playerStandAnim){
+                            $playerSprite.attr("src", playerRunAnim);
                         }
                     }else{
-                        $player.attr("src", playerStandAnim);
+                        $playerSprite.attr("src", playerStandAnim);
                     }
 
                     //RESETUJEMY SPEED
                     playerSpeed = 10;
                     
-                    if(checkColision($player, $coin)){
+                    if(checkColision($playerHitbox, $coinHitbox)){
                         randomObjectPosition($coin);
                         playerPoints++;
                         pointToNextObstacle--;
@@ -252,6 +296,7 @@
                         randomObstacle();
                     }
 
+                    //KOŃCE GRY
                     timeAccumulator += interval;
                     if(timeAccumulator >= 1000){
                         timeAccumulator = 0;
@@ -261,13 +306,13 @@
                             gameOver("Koniec czasu");
                         }
                     }
-                    $(".rock").each(function(){
-                        if(checkColision($player, $(this))){
+                    $(".rock .rockHitbox").each(function(){
+                        if(checkColision($playerHitbox, $(this))){
                             gameOver("Uderzyłeś w kamień");
                         }
                     })
-                    $(".log").each(function(){
-                        if(checkColision($player, $(this))){
+                    $(".log .logHitbox").each(function(){
+                        if(checkColision($playerHitbox, $(this))){
                             gameOver("Przygniotła cię kłoda");
                         }
                     })
@@ -279,17 +324,22 @@
 </head>
 <body>
     <div class="gameInfoContainer">
-        <p>Punkty: <span id="points"></span></p>
-        <p>Zostało <span id="timer"></span> sekund</span></p>
-        <p id="pause">pauza(p)</p>
+        <p class="m-0">Punkty: <span id="points"></span></p>
+        <p class="m-0">Zostało <span id="timer"></span> sekund</span></p>
+        <p id="pause" class="m-0">pauza(p)</p>
+        <p id="hitbox" class="m-0">pokaż hitboxy(h)</p>
     </div>
 
     <div class="container mainGameContainer">
-        <img src="../sprites/player_stand.png" class="player">
+        <div id="player">
+            <img src="../sprites/player_stand.png" id="playerSprite">
+            <div class="playerHitbox" id="playerHitbox"></div>
+        </div>
+        
         <div class="pauseMenu menu pt-2">
             <a href="../main_menu.html"><button>MENU GŁÓWNE</button></a><br>
             <a href="main_game.html"><button>ZAGRAJ PONOWNIE</button></a><br>
-            <button id="resume">WZNÓW</button><br>
+            <button id="resumeBtn">WZNÓW</button><br>
         </div>
     </div>
 

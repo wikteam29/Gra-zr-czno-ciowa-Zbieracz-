@@ -20,7 +20,7 @@ body{
     background-repeat: repeat;
 }
 .menuBody{
-    padding: 5vw 15vw 0vw 15vw;
+    padding: 4vw 15vw 0vw 15vw;
 }
 .menu{
     background-image: url("../sprites/BG_wood.png");

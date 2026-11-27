@@ -166,7 +166,7 @@
             function togglePause(){
                 pause = !pause;
                 if(pause){
-                    $player.attr("src", playerStandAnim);
+                    $playerSprite.attr("src", playerStandAnim);
                     $(".pauseMenu").show();
                 }else{
                     $(".pauseMenu").hide();
@@ -181,7 +181,7 @@
 
             function hideHitbox(){
                 hitboxShowed = false;
-                $(".playerHitbox, .coinHitbox, .logHitbox").removeClass("border border-primary");
+                $(".playerHitbox, .coinHitbox, .rockHitbox, .logHitbox").removeClass("border border-primary");
                 $("#player, #coin, .rock, .log").removeClass("border border-danger");
             }
 
@@ -240,28 +240,44 @@
                     }
 
 
-                    let leftBorder = 0 - $player.width()/2;
-                    let rightBorder = $cont.width() - $player.width()/2; //width() i height() ZWRACAJĄ LICZBE BEZ PX
-                    let topBorder = 0;
+                    let leftBorder = 0 - 19;
+                    let rightBorder = $cont.width() - $player.width() + 19; //width() i height() ZWRACAJĄ LICZBE BEZ PX
+                    let topBorder = 0 - 3;
                     let bottomBorder = $cont.height() - $player.height();
 
                     //RUCH
-                    if(clickedKeys["a"] && playerPositionX - playerSpeed >= leftBorder){
+                    if(clickedKeys["a"]){
                         facingDirection = 1;
-                        playerPositionX -= playerSpeed;
+                        if(playerPositionX - playerSpeed >= leftBorder){
+                            playerPositionX -= playerSpeed;
+                        }else{
+                            playerPositionX = leftBorder;
+                        }
                         $player.css("margin-left", playerPositionX);
                     }
-                    if(clickedKeys["d"] && playerPositionX + playerSpeed <= rightBorder){
+                    if(clickedKeys["d"]){
                         facingDirection = 0;
-                        playerPositionX += playerSpeed;
+                        if(playerPositionX + playerSpeed <= rightBorder){
+                            playerPositionX += playerSpeed;
+                        }else{
+                            playerPositionX = rightBorder;
+                        }
                         $player.css("margin-left", playerPositionX);
                     }
-                    if(clickedKeys["w"] && playerPositionY - playerSpeed >= topBorder){
-                        playerPositionY -= playerSpeed;
+                    if(clickedKeys["w"]){
+                        if(playerPositionY - playerSpeed >= topBorder){
+                            playerPositionY -= playerSpeed;
+                        }else{
+                            playerPositionY = topBorder;
+                        }
                         $player.css("margin-top", playerPositionY);
                     }
-                    if(clickedKeys["s"] && playerPositionY + playerSpeed <= bottomBorder){
-                        playerPositionY += playerSpeed;
+                    if(clickedKeys["s"]){
+                        if(playerPositionY + playerSpeed <= bottomBorder){
+                            playerPositionY += playerSpeed;
+                        }else{
+                            playerPositionY = bottomBorder;
+                        }
                         $player.css("margin-top", playerPositionY);
                     }
 
